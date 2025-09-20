@@ -1,20 +1,14 @@
 #!/usr/bin/env python3
 """
-Multi-library PII redaction script using scrubadub, presidio, and pii-codex.
-Processes a file line by line and creates a single output file with all libraries applied.
+PII redaction script using Microsoft Presidio.
+Processes a file line by line and creates an output file with redacted content.
 """
 
 import argparse
 import sys
 from pathlib import Path
 
-# Import the redaction libraries
-try:
-    import scrubadub
-except ImportError:
-    print("Please install scrubadub: pip install scrubadub")
-    sys.exit(1)
-
+# Import Presidio
 try:
     from presidio_analyzer import AnalyzerEngine
     from presidio_anonymizer import AnonymizerEngine
@@ -22,46 +16,22 @@ except ImportError:
     print("Please install presidio: pip install presidio-analyzer presidio-anonymizer")
     sys.exit(1)
 
-try:
-    from pii_codex import PIIProcessor
-except ImportError:
-    print("Please install pii-codex: pip install pii-codex")
-    sys.exit(1)
 
-
-class MultiRedactor:
-    """Handles redaction using multiple libraries."""
+class PresidioRedactor:
+    """Handles PII redaction using Microsoft Presidio."""
 
     def __init__(self):
-        # Initialize scrubadub (no setup needed)
-        self.scrubadub_ready = True
-
         # Initialize presidio
         try:
             self.presidio_analyzer = AnalyzerEngine()
             self.presidio_anonymizer = AnonymizerEngine()
             self.presidio_ready = True
         except Exception as e:
-            print(f"Warning: Presidio initialization failed: {e}")
+            print(f"Error: Presidio initialization failed: {e}")
             self.presidio_ready = False
 
-        # Initialize pii-codex
-        try:
-            self.pii_processor = PIIProcessor()
-            self.pii_codex_ready = True
-        except Exception as e:
-            print(f"Warning: PII-Codex initialization failed: {e}")
-            self.pii_codex_ready = False
-
-    def redact_with_scrubadub(self, text):
-        """Redact using scrubadub library."""
-        try:
-            return scrubadub.clean(text)
-        except Exception as e:
-            return f"[SCRUBADUB ERROR: {e}] {text}"
-
-    def redact_with_presidio(self, text):
-        """Redact using Microsoft Presidio library."""
+    def redact(self, text):
+        """Redact PII using Microsoft Presidio."""
         if not self.presidio_ready:
             return f"[PRESIDIO NOT AVAILABLE] {text}"
 
@@ -79,20 +49,8 @@ class MultiRedactor:
         except Exception as e:
             return f"[PRESIDIO ERROR: {e}] {text}"
 
-    def redact_with_pii_codex(self, text):
-        """Redact using pii-codex library."""
-        if not self.pii_codex_ready:
-            return f"[PII-CODEX NOT AVAILABLE] {text}"
-
-        try:
-            # Process the text
-            result = self.pii_processor.redact(text)
-            return result
-        except Exception as e:
-            return f"[PII-CODEX ERROR: {e}] {text}"
-
     def process_file(self, input_file, output_file=None):
-        """Process a file line by line with all three libraries."""
+        """Process a file line by line using Presidio."""
 
         input_path = Path(input_file)
         if not input_path.exists():
@@ -128,11 +86,8 @@ class MultiRedactor:
 
                     line_count += 1
 
-                    # Apply all libraries sequentially
-                    redacted = line_content
-                    redacted = self.redact_with_scrubadub(redacted)
-                    redacted = self.redact_with_presidio(redacted)
-                    redacted = self.redact_with_pii_codex(redacted)
+                    # Apply Presidio redaction
+                    redacted = self.redact(line_content)
 
                     # Write output
                     outfile.write(redacted + "\n")
@@ -153,7 +108,7 @@ def main():
     """Main function to handle command-line arguments and run the redactor."""
 
     parser = argparse.ArgumentParser(
-        description="Redact PII from text files using multiple libraries.",
+        description="Redact PII from text files using Microsoft Presidio.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -161,7 +116,7 @@ Examples:
   %(prog)s input.txt -o cleaned.txt
   %(prog)s sensitive_data.txt -o /path/to/output/safe_data.txt
   
-The script applies all three libraries (scrubadub, Presidio, pii-codex) sequentially.
+The script uses Microsoft Presidio to detect and redact PII.
         """,
     )
 
@@ -178,8 +133,8 @@ The script applies all three libraries (scrubadub, Presidio, pii-codex) sequenti
     args = parser.parse_args()
 
     # Initialize the redactor
-    print("Initializing redaction libraries...")
-    redactor = MultiRedactor()
+    print("Initializing Presidio...")
+    redactor = PresidioRedactor()
     print()
 
     # Process the file
