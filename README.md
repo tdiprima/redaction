@@ -1,6 +1,8 @@
-# 🕵️‍♂️ PII Redaction Tool
+# 🕵️ PII Redaction Tool
 
 A no-nonsense (but kinda cool) script that wipes out personal info from text files using **Microsoft Presidio**.
+
+Does not require Torch.
 
 Tried **scrubadub** and **pii-codex**, but they didn't quite pass the vibe check — so this one gets the job done.
 
