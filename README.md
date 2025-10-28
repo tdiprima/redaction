@@ -1,5 +1,7 @@
 # 🕵️ PII Redaction Tool
 
+[![PyPI](https://img.shields.io/pypi/v/redaction.svg)](https://pypi.org/project/redaction/)
+
 Wipes out personal info from text files using **[Microsoft Presidio](https://github.com/microsoft/presidio)**.
 
 Built for devs who want something lightweight, fast, and Torch-free — a no-drama way to clean text.
