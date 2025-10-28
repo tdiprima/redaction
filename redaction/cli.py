@@ -86,24 +86,31 @@ class PresidioRedactor:
 def main():
     """Main function to handle command-line arguments and run the redactor."""
     parser = argparse.ArgumentParser(
-        description="Redact PII from text files using Microsoft Presidio.",
+        prog="redact",
+        description="🕵️‍♂️ Redact PII from text files using Microsoft Presidio.",
         formatter_class=RichHelpFormatter,
         epilog="""
 Examples:
-  %(prog)s input.txt
-  %(prog)s input.txt -o cleaned.txt
-  %(prog)s sensitive_data.txt -o /path/to/output/safe_data.txt
+  redact input.txt
+  redact input.txt -o cleaned.txt
+  redact sensitive_data.txt -o /path/to/output/safe_data.txt
 
-The script uses Microsoft Presidio to detect and redact PII.
+The script uses Microsoft Presidio to detect and redact personally identifiable information (PII)
+including names, email addresses, phone numbers, SSNs, credit card numbers, and more.
         """,
     )
 
-    parser.add_argument("input_file", help="Path to the input file to be redacted")
+    parser.add_argument(
+        "input_file",
+        metavar="FILE",
+        help="Path to the input file to be redacted"
+    )
     parser.add_argument(
         "-o",
         "--output",
         dest="output_file",
-        help="Output file name (default: input_filename_redacted.txt)",
+        metavar="OUTPUT",
+        help="Output file name (default: <input>_redacted.txt)",
     )
 
     args = parser.parse_args()
