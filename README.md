@@ -41,8 +41,7 @@ My name is <PERSON> and my email is <EMAIL_ADDRESS>.
 * No GPU, no Torch — just clean text ops.
 * Designed for quick local use or integration in your data pipeline.
 
-## ⚙️ License
-
-MIT © 2025
-
 **GitHub:** [https://github.com/tdiprima/redaction](https://github.com/tdiprima/redaction)
+
+## ⚠️ Heads up:
+No PII tool is perfect — always sanity-check the output before using it in production.
