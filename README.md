@@ -37,11 +37,13 @@ My name is <PERSON> and my email is <EMAIL_ADDRESS>.
 
 ## 🧠 Tech Notes
 
-* Built on top of Microsoft Presidios Analyzer + Anonymizer.
+* Built on top of Microsoft Presidio's Analyzer + Anonymizer.
 * No GPU, no Torch — just clean text ops.
 * Designed for quick local use or integration in your data pipeline.
 
 **GitHub:** [https://github.com/tdiprima/redaction](https://github.com/tdiprima/redaction)
+
+---
 
 ## ⚠️ Heads up:
 No PII tool is perfect — always sanity-check the output before using it in production.
