@@ -1,4 +1,4 @@
-# 🕵️ PII Redaction Tool
+# 🕵 PII Redaction Tool
 
 [![PyPI](https://img.shields.io/pypi/v/redaction.svg)](https://pypi.org/project/redaction/)
 
@@ -47,5 +47,5 @@ My name is <PERSON> and my email is <EMAIL_ADDRESS>.
 
 ---
 
-## ⚠️ Heads up:
+## ⚠ Heads up:
 No PII tool is perfect — always sanity-check the output before using it in production.

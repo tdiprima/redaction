@@ -87,7 +87,7 @@ def main():
     """Main function to handle command-line arguments and run the redactor."""
     parser = argparse.ArgumentParser(
         prog="redact",
-        description="🕵️‍♂️ Redact PII from text files using Microsoft Presidio.",
+        description="🕵‍♂ Redact PII from text files using Microsoft Presidio.",
         formatter_class=RichHelpFormatter,
         epilog="""
 Examples:
