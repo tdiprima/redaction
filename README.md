@@ -1,6 +1,7 @@
 # 🕵 PII Redaction Tool
-
 [![PyPI](https://img.shields.io/pypi/v/redaction.svg)](https://pypi.org/project/redaction/)
+
+Presidio NLP PII redaction
 
 Wipes out personal info from text files using **[Microsoft Presidio](https://github.com/microsoft/presidio)**.
 
