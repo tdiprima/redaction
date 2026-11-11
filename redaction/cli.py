@@ -4,8 +4,27 @@ Processes a file line by line and creates an output file with redacted content.
 """
 
 import argparse
+import re
 import sys
 from pathlib import Path
+
+# VAST tokens are opaque strings Presidio cannot recognize, so match on the label instead:
+# "VMS API Token: x", "VAST_API_TOKEN=x", '"vms_token": "x"', "Authorization: Api-Token x"
+# shortcut: label-based only, a bare token with no label passes through; add a format regex if one is known.
+VAST_TOKEN_RE = re.compile(
+    r"""(?ix)
+    (
+        \b(?:vast|vms)[\w .-]{0,40}?token\w*["']?\s*[:=]\s*["']?   # labelled value
+      | \bapi-token\s+                                            # VMS auth header
+    )
+    [^\s"',;]+
+    """
+)
+
+
+def redact_vast_tokens(text):
+    """Replace VAST/VMS API token values, keeping the label."""
+    return VAST_TOKEN_RE.sub(r"\1<VAST_API_TOKEN>", text)
 
 # Import Presidio
 try:
@@ -33,6 +52,9 @@ class PresidioRedactor:
 
     def redact(self, text):
         """Redact PII using Microsoft Presidio."""
+        # Tokens first, so Presidio cannot redact only part of one
+        text = redact_vast_tokens(text)
+
         # Analyze the text for PII
         results = self.presidio_analyzer.analyze(text=text, language="en")
 
