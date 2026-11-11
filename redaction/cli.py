@@ -8,23 +8,25 @@ import re
 import sys
 from pathlib import Path
 
-# VAST tokens are opaque strings Presidio cannot recognize, so match on the label instead:
-# "VMS API Token: x", "VAST_API_TOKEN=x", '"vms_token": "x"', "Authorization: Api-Token x"
-# shortcut: label-based only, a bare token with no label passes through; add a format regex if one is known.
+# VAST tokens are opaque strings Presidio cannot recognize.
+# shortcut: a labelled token under 20 chars or with no digit passes through; loosen _VALUE if VAST issues such tokens.
+_VALUE = r"(?<![\w.+/-])(?=[\w.+/=-]*\d)[\w.+/=-]{20,}"  # long and has a digit, so prose and variable names are left alone
 VAST_TOKEN_RE = re.compile(
-    r"""(?ix)
+    rf"""(?ix)
     (
-        \b(?:vast|vms)[\w .-]{0,40}?token\w*["']?\s*[:=]\s*["']?   # labelled value
-      | \bapi-token\s+                                            # VMS auth header
+        # label, then the token anywhere later on the line: "VMS API Token: KEEP SAFE! x", "VAST_API_TOKEN=x"
+        \b(?:vast|vms)[\w .-]{{0,40}}?token\w*["']?\s*[:=].{{0,80}}?
+      | \bapi-token\s+                                  # VMS auth header
     )
-    [^\s"',;]+
+    {_VALUE}
+  | \b[a-z0-9]{{8}}\.[a-z0-9]{{32}}\b                     # VMS key format (8-char prefix, dot, 32 chars), no label needed
     """
 )
 
 
 def redact_vast_tokens(text):
     """Replace VAST/VMS API token values, keeping the label."""
-    return VAST_TOKEN_RE.sub(r"\1<VAST_API_TOKEN>", text)
+    return VAST_TOKEN_RE.sub(lambda m: (m.group(1) or "") + "<VAST_API_TOKEN>", text)
 
 # Import Presidio
 try:
