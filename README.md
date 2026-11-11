@@ -13,6 +13,8 @@ Built for devs who want something lightweight, fast, and Torch-free — a no-dra
 pip install redaction
 ````
 
+The first run downloads the spaCy model `en_core_web_lg` (about 400 MB).
+
 ## 🧹 Usage
 
 ```bash
